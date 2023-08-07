@@ -25,7 +25,7 @@
 <script type="text/javascript"
 	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=076bc91809407fe07291974850261b9a&libraries=services"></script>
 <script>
-// 기사 정보
+// 정보
 const inform = {
 		driver1:[
 			{
