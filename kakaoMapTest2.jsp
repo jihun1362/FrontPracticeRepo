@@ -4,26 +4,30 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-
+<title>KakaoMapTest</title>
+<style type="text/css">
+.btn-Size {
+	height: 50px;
+}
+</style>
 
 </head>
 <body>
 	<div id="map" style="width: 100%; height: 350px;"></div>
 
-	<button onclick="resizeMap()">지도 크기 바꾸기</button>
+	<button class="btn-Size" onclick="resizeMap()">지도 크기 바꾸기</button>
 	<br>
-	<button onclick="myLocation()">내위치</button>
-	<button onclick="appendMarker(inform.driver1)">기사1</button>
-	<button onclick="appendMarker(inform.driver2)">기사2</button>
-	<button onclick="appendMarker(inform.driver3)">기사3</button>
-	<button onclick="appendMarker(inform.driver4)">기사4</button>
+	<button class="btn-Size" onclick="myLocation()">내위치</button>
+	<button class="btn-Size" onclick="appendMarker(inform.driver1)">기사1</button>
+	<button class="btn-Size" onclick="appendMarker(inform.driver2)">기사2</button>
+	<button class="btn-Size" onclick="appendMarker(inform.driver3)">기사3</button>
+	<button class="btn-Size" onclick="appendMarker(inform.driver4)">기사4</button>
 	<br>
-	<button onclick="setBounds()">마커 한 화면 보이기</button>
+	<button class="btn-Size" onclick="setBounds()">마커 한 화면 보이기</button>
 	<br>
-	<button onclick="showInfowindows()">인포윈도우 열기</button>
+	<button class="btn-Size" onclick="showInfowindows()">인포윈도우 열기</button>
 	<br>
-	<button onclick="hideInfowindows()">인포윈도우 닫기</button>
+	<button class="btn-Size" onclick="hideInfowindows()">인포윈도우 닫기</button>
 	<br>
 	<a id="start-navigation" href="javascript:kakaoNavi()">
 	  <img src="https://developers.kakao.com/assets/img/about/buttons/navi/kakaonavi_btn_medium.png"
@@ -33,7 +37,7 @@
 <!-- body 밑에 있어야 맵이 작동! -->
 <script type="text/javascript"
 	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=appkey&libraries=services"></script>
-
+	
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.3.0/kakao.min.js"
   integrity="sha384-70k0rrouSYPWJt7q9rSTKpiTfX6USlMYjZUtr1Du+9o4cGvhPAWxngdtVZDdErlh" crossorigin="anonymous"></script>
 <script>
@@ -260,8 +264,11 @@ function centerMarker(driver, centerX, centerY) {
    	putOnLocation(centerPosition);
 }
 
-// 내위치 찍기 함수
+// 내 위치 찍기 함수
 function myLocation() {
+	
+	console.log('실행이 안되고 있다면 https 설정이 됬는지 확인하세요!');
+	console.log('로컬이 아닌 환경에서는 https 설정이 안된 브라우저에서는 Kakao geolocation api가 작동하지 않습니다!');
 	
 	// 지도 재설정 범위 정보 초기화
 	bounds = new kakao.maps.LatLngBounds(); 
@@ -273,15 +280,16 @@ function myLocation() {
 	    // GeoLocation을 이용해서 접속 위치를 얻기
 	    navigator.geolocation.getCurrentPosition(function(position) {
 	        
+	    	
 	    	// geolocation 위치 정보
 	        var lat = position.coords.latitude, // 위도
 	            lon = position.coords.longitude; // 경도
 	        
 	        // 내 위치 좌표
-	        var locPosition = new kakao.maps.LatLng(lat, lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+	        var locPosition = new kakao.maps.LatLng(lat, lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다     
 	     	// 인포윈도우 메세지
 		    var message = '여기에 계신가요?!';
-	       
+		    console.log('내 위치 좌표:'+locPosition);
 	        // 내위치 확인 문구
 		    var myPoint = "myPoint";
 	        
@@ -351,6 +359,8 @@ function markerSave(locPosition, message, myPoint) {
 	   	// 인포윈도우 저장
 	   	infowindows.push(infowindow);
 	   	
+	   	infowindows[0].open(map, markers[0]);
+	   	
 	} else {
 		// 마커를 생성
 	   	var marker = new kakao.maps.Marker({
@@ -398,7 +408,7 @@ function putOnLocation(locPosition) {
 	// 마커와 인포 윈도우 찍기
 	for (var i = 0; i < markers.length; i++) {
 		markers[i].setMap(map);
-		infowindows[i].open(map, markers[i]);
+		//infowindows[i].open(map, markers[i]);
 	}
 	
 	// 지도 중심좌표를 접속위치로 변경합니다
@@ -452,8 +462,6 @@ function markerNavi(coordinateX, coordinateY) {
 		  coordType: 'wgs84',
 		});
 }
-
-
 
 </script>
 </html>
