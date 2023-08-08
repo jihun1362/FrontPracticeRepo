@@ -23,7 +23,7 @@
 </body>
 <!-- body 밑에 있어야 맵이 작동! -->
 <script type="text/javascript"
-	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=076bc91809407fe07291974850261b9a&libraries=services"></script>
+	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=appkey&libraries=services"></script>
 <script>
 // 정보
 const inform = {
