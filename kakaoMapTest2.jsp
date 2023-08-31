@@ -45,7 +45,7 @@
 </script>
 
 <script>
-// 기사 정보
+// 정보(test)
 const inform = {
 		driver1:[
 			{
