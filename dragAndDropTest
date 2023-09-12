@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<!-- ============================================================================================== -->
+<!-- ============================================================================================== -->
+<style>
+.container1 {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 10px;
+}
+
+.box1 {
+	border: 3px solid #666;
+	background-color: #ddd;
+	border-radius: .5em;
+	padding: 10px;
+	cursor: move;
+}
+
+.box1.over {
+	border: 3px dotted #666;
+}
+</style>
+<script>
+
+document.addEventListener('DOMContentLoaded', (event) => {
+	
+	// 드래그 요소 추적을 위한 변수
+	var dragSrcEl = null;
+	
+	// 드래그 시작
+	function handleDragStart(e) {
+		// 드래그 시작 시 투명도 40%
+		this.style.opacity = '0.4';
+	    // 현재 요소 할당
+	    dragSrcEl = this;
+
+	    // 이동 허용
+	    e.dataTransfer.effectAllowed = 'move';
+	    // 드래그 작업 중에 전송되는 데이터를 설정
+	    // 데이터 유형을 'text/html'로 설정하고 실제 데이터를 현재 요소의 HTML 콘텐츠(this.innerHTML)로 설정합니다.
+	    // 이 데이터는 요소를 놓기 대상에 놓을 때 사용할 수 있습니다.
+	    e.dataTransfer.setData('text/html', this.innerHTML);
+	}
+
+	// 드롭 대상 위로 오버 시
+	function handleDragOver(e) {
+		if (e.preventDefault) {
+			e.preventDefault();
+	    }
+		
+		// 요소를 대상 위에 놓을 때 허용되는 드롭 효과 유형을 지정
+		// 이 경우 'move'로 설정되어 요소를 드롭 대상으로 이동할 수 있음을 나타냄
+	    e.dataTransfer.dropEffect = 'move';
+		
+	    return false;
+	}
+
+	// css요소 over클래스 추가
+	function handleDragEnter(e) {
+	    this.classList.add('over');
+	}
+	// css요소 over클래스 삭제
+	function handleDragLeave(e) {
+	    this.classList.remove('over');
+	}
+
+	// 드래그 드랍 시 
+	function handleDrop(e) {
+		// 이는 이벤트가 DOM 트리 위로 더 이상 전파되는 것을 방지하는 데 사용됩니다.
+		// 끌어서 놓기 시나리오에서 이는 요소를 놓을 때 새 페이지로 이동하는 것과 같은
+		// 브라우저의 기본 동작이 발생하지 않도록 방지하는 데 자주 사용됩니다.
+	    if (e.stopPropagation) {
+			e.stopPropagation(); // stops the browser from redirecting.
+	    }
+	    
+		// 드롭되는 요소(this)가 원래 드래그된 요소(dragSrcEl)와 동일한지 여부를 확인
+	    if (dragSrcEl != this) {
+	    	// 이 줄은 원래 드래그된 요소(dragSrcEl)와 드롭되는 요소(this) 사이의 HTML 콘텐츠를 교환
+		    dragSrcEl.innerHTML = this.innerHTML;
+	    	
+	      	this.innerHTML = e.dataTransfer.getData('text/html');
+	    }
+	    
+	    return false;
+	}
+	
+	// 드래그 종료
+	function handleDragEnd(e) {
+	    // 드래그 종료 시 투명도 100%
+		this.style.opacity = '1';
+	    
+	    // over클래스 삭제
+	    items.forEach(function (item) {
+			item.classList.remove('over');
+	    });
+	}
+	
+	// 클래스 선택('container' 클래스가 있는 요소의 자손인 'box' 클래스가 있는 모든 요소를 ​​선택)
+	let items = document.querySelectorAll('.container1 .box1');
+	// 이벤트 리스너를 추가하여 다양한 드래그 앤 드롭 이벤트를 처리
+	items.forEach(function(item) {
+	  	item.addEventListener('dragstart', handleDragStart, false);
+	  	item.addEventListener('dragenter', handleDragEnter, false);
+	    item.addEventListener('dragover', handleDragOver, false);
+	    item.addEventListener('dragleave', handleDragLeave, false);
+	    item.addEventListener('drop', handleDrop, false);
+	    item.addEventListener('dragend', handleDragEnd, false);
+	});
+});
+</script>
+<!-- ============================================================================================== -->
+<!-- ============================================================================================== -->
+<style>
+.container2 {
+	background-color: #f3f5f7;
+	padding: 2rem;
+	border-collapse: collapse;
+}
+
+.container2:nth-child(n+2) {
+	margin-top: 1rem;
+}
+
+.draggable2 {
+	height: 82px;
+	line-height: 82px;
+	padding: 0 20px;
+	background-color: white;
+	border: 1px solid #c5cdd7;
+	border-bottom: none;
+	box-sizing: border-box;
+	cursor: grab;
+}
+
+.draggable2:last-child {
+	border-bottom: 1px solid #c5cdd7;
+}
+
+.draggable2.dragging {
+	opacity: .5;
+	border: 2px dashed red;
+}
+
+.el2 {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.ico-drag2 {
+	display: inline-block;
+	vertical-align: inherit;
+	width: 15px;
+	height: 15px;
+}
+</style>
+<script>
+   /**
+    * [x] 엘리먼트의 .draggable, .container의 배열로 선택자를 지정합니다.
+    * [x] draggables를 전체를 루프하면서 dragstart, dragend를 이벤트를 발생시킵니다.
+    * [x] dragstart, dragend 이벤트를 발생할때 .dragging라는 클래스를 토글시킨다.
+    * [x] dragover 이벤트가 발생하는 동안 마우스 드래그하고 마지막 위치해놓은 Element를 리턴하는 함수를 만듭니다.
+    */
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+	  // 중복 제거
+      const $ = (select) => document.querySelectorAll(select);
+      const draggables = $('.draggable2');
+      const containers = $('.container2');
+
+      
+      draggables.forEach(el => {
+         el.addEventListener('dragstart', () => {
+            el.classList.add('dragging');
+         });
+
+         el.addEventListener('dragend', () => {
+            el.classList.remove('dragging')
+         });
+      });
+
+      // Element를 리턴하는 함수
+      function getDragAfterElement(container, y) {
+         const draggableElements = [...container.querySelectorAll('.draggable2:not(.dragging)')]
+
+         return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect() //해당 엘리먼트에 top값, height값 담겨져 있는 메소드를 호출해 box변수에 할당
+            const offset = y - box.top - box.height / 2 //수직 좌표 - top값 - height값 / 2의 연산을 통해서 offset변수에 할당
+            if (offset < 0 && offset > closest.offset) { // (예외 처리) 0 이하 와, 음의 무한대 사이에 조건
+               return { offset: offset, element: child } // Element를 리턴
+            } else {
+               return closest
+            }
+         }, { offset: Number.NEGATIVE_INFINITY }).element
+      };
+       
+      containers.forEach(container => {
+         container.addEventListener('dragover', e => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(container, e.clientY);
+            const draggable = document.querySelector('.dragging')
+            container.insertBefore(draggable, afterElement)
+         })
+      });
+    });
+</script>
+<!-- ============================================================================================== -->
+<!-- ============================================================================================== -->
+<!-- jquery 추가 실시 -->
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+
+
+<!-- 내부 CSS 스타일 지정 -->
+<style>
+/* 
+		[요소 설명] 
+		1. font-family : 폰트 표시 형태 스타일 지정
+		2. width : 가로 크기 지정
+		3. height : 세로 크기 지정
+		4. margin : 마진 (외부) 여백 설정
+		5. padding : 패딩 (내부) 여백 설정
+		6. border : 테두리 (선) 표시 설정
+		7. background : 배경 표시 설정
+		8. display : 화면에 어떻게 표시 할지를 설정 (정렬, 표시여부)		
+		9. div : 레이아웃 표시 블록
+		10. position : 레이아웃 배치할때 사용	
+		11. float : 정렬 기준 설정
+		12. overflow : 콘텐츠 영역 표시 여부 설정
+		13. scrollbar : 브라우저 스크롤바 설정
+    	
+    	
+		[세부 설명]
+		1. width : 100%; : 가로 크기를 (%)로 지정 - 반응형 설정
+		2. margin : 0 auto; : 중앙 배치 설정
+		3. border : none; : 테두리 스타일 없음 설정
+		4. background-color : #343d46; : rgb 색상을 사용해 배경색 지정
+		5. position : relative; : 부모 기준으로 위치 지정 실시				
+		6. overflow : auto; : 콘텐츠 영역이 크기를 벗어나면 자동 스크롤 지정		 
+		*/
+
+/* html, body 영역 스타일 지정 */
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border: none;
+	/* 스크롤바 표시 지정 */
+	overflow: auto;
+}
+
+/* body 스크롤바 메인 스타일 지정 */
+body::-webkit-scrollbar {
+	/* 스크롤바 너비 지정 */
+	width: 10px;
+	/* 스크롤바 배경 색상 지정 */
+	background-color: #c1c1c1;
+}
+/* body 스크롤바 thumb 스타일 지정 */
+body::-webkit-scrollbar-thumb {
+	/* 스크롤바 thumb 색상 지정 */
+	background-color: #444444;
+}
+
+/* 부모 div 스타일 지정 */
+#content_container {
+	width: 80%;
+	height: 80%;
+	margin: 0 auto;
+	padding: 0;
+	border: none;
+	background-color: #163a64;
+	/* 컨테이너 배치 정렬 실시 */
+	float: top;
+	/* position: relative; */
+	top: 10%;
+	left: 0%;
+}
+
+/* 자식 div 스타일 지정 */
+#container_1 {
+	width: 27%;
+	height: 40%;
+	margin: 0 auto;
+	padding: 0;
+	border: none;
+	background-color: #ff0000;
+	/* 컨테이너 배치 정렬 실시 */
+	float: left;
+	position: relative;
+	top: 5%;
+	left: 5%;
+	/* 마우스 커서 스타일 */
+	cursor: pointer;
+}
+
+/* 자식 div 스타일 지정 */
+#container_2 {
+	width: 27%;
+	height: 40%;
+	margin: 0 auto;
+	padding: 0;
+	border: none;
+	background-color: #00ff00;
+	/* 컨테이너 배치 정렬 실시 */
+	float: left;
+	position: relative;
+	top: 5%;
+	left: 10%;
+	/* 마우스 커서 스타일 */
+	cursor: pointer;
+}
+
+/* 자식 div 스타일 지정 */
+#container_3 {
+	width: 27%;
+	height: 40%;
+	margin: 0 auto;
+	padding: 0;
+	border: none;
+	background-color: #0000ff;
+	/* 컨테이너 배치 정렬 실시 */
+	float: left;
+	position: relative;
+	top: 5%;
+	left: 15%;
+	/* 마우스 커서 스타일 */
+	cursor: pointer;
+}
+
+/* 자식 div 스타일 지정 */
+#container_4 {
+	width: 27%;
+	height: 40%;
+	margin: 0 auto;
+	padding: 0;
+	border: none;
+	background-color: #ff00ff;
+	/* 컨테이너 배치 정렬 실시 */
+	float: left;
+	position: relative;
+	top: 10%;
+	left: 5%;
+	/* 마우스 커서 스타일 */
+	cursor: pointer;
+}
+
+/* 자식 div 스타일 지정 */
+#container_5 {
+	width: 27%;
+	height: 40%;
+	margin: 0 auto;
+	padding: 0;
+	border: none;
+	background-color: #ffcccc;
+	/* 컨테이너 배치 정렬 실시 */
+	float: left;
+	position: relative;
+	top: 10%;
+	left: 10%;
+	/* 마우스 커서 스타일 */
+	cursor: pointer;
+}
+
+/* 자식 div 스타일 지정 */
+#container_6 {
+	width: 27%;
+	height: 40%;
+	margin: 0 auto;
+	padding: 0;
+	border: none;
+	background-color: #000000;
+	/* 컨테이너 배치 정렬 실시 */
+	float: left;
+	position: relative;
+	top: 10%;
+	left: 15%;
+	/* 마우스 커서 스타일 */
+	cursor: pointer;
+}
+</style>
+
+<!-- 내부 JS 지정 -->
+<script>
+		/* 
+		[JS 요약 설명]
+		1. 기능 : 드래그 앤 드롭 기능으로 마우스 및 터치 이벤트를 감지하여 특정 태그 id 값과 속성을 변경 수행
+		2. 참고 : 브라우저 단과 모바일 단을 구분해서 구현한 이유는 브라우저에서 사용하는 drag 기능은 모바일에서 마우스 이벤트를 지원하지 않는다 
+		*/
+		
+		/*================= [공통 전역 변수 선언 부분] =================*/		
+		var dragId = ""; //최초로 드래그를 시도하려는 객체 id 저장
+		var tagId = ""; //변경될 객체 id 저장
+		var beaforeX; //최초 객체 x 좌표값 저장
+		var beaforeY; //최초 객체 y 좌표값 저장
+		var afterX; //변경될 객체 x 좌표값 저장
+		var afterY; //변경될 객체 y 좌표값 저장
+		
+		
+		/*=================== [브라우저 단 처리] ===================*/
+		/* 드랍할 위치 태그에 다른 이벤트가 발생하는 것을 방지 */
+		function allowDrop(evt) {
+			evt.preventDefault();
+		};
+		
+		/* 드래그 시 이벤트 함수 */
+		function drag(evt) {
+			/* 선택한 div id 값 확인 */				
+			dragId = evt.target.id;
+			
+			/* 투명도 조절 실시 */
+			document.getElementById(dragId).style.opacity = '0.5';
+		};
+		
+		/* 드랍 완료 시 이벤트 함수 */
+		function drop(evt) {
+			evt.preventDefault();
+			
+			/* 변경될 div id 값 확인 */				
+			tagId = evt.target.id;
+			
+			/* 속성값 동적 변경 함수 호출 */
+			select_change(dragId, tagId);
+		};
+		
+		
+		/*=================== [모바일 단 처리] ===================*/				
+		/* window.onload 사용해 터치 이벤트 발생 확인 : 상시 대기 */
+		window.onload = function() {						
+			/* 터치 이벤트 감시 위한 객체 등록 및 이벤트 등록 실시 */
+			var container_1 = document.getElementById('container_1');
+			var container_2 = document.getElementById('container_2');
+			var container_3 = document.getElementById('container_3');
+			var container_4 = document.getElementById('container_4');
+			var container_5 = document.getElementById('container_5');
+			var container_6 = document.getElementById('container_6');
+			
+			/* 터치 이벤트 등록 */
+			container_1.addEventListener("touchmove", handleMove,false);
+			container_1.addEventListener("touchend", handleEnd, false);
+			
+			container_2.addEventListener("touchmove", handleMove,false);			
+			container_2.addEventListener("touchend", handleEnd, false);
+			
+			container_3.addEventListener("touchmove", handleMove,false);			
+			container_3.addEventListener("touchend", handleEnd, false);
+			
+			container_4.addEventListener("touchmove", handleMove,false);			
+			container_4.addEventListener("touchend", handleEnd, false);
+			
+			container_5.addEventListener("touchmove", handleMove,false);			
+			container_5.addEventListener("touchend", handleEnd, false);
+						
+			container_6.addEventListener("touchmove", handleMove,false);			
+			container_6.addEventListener("touchend", handleEnd, false);			
+									
+			/* 터치 이동 이벤트 발생 */
+			function handleMove(evt) {
+				/* 선택한 div id 값 확인 */				
+				dragId = evt.targetTouches[0].target.id;
+				
+				/* 투명도 조절 실시 */
+				document.getElementById(dragId).style.opacity = '0.5';
+				
+				/* 시작 좌표값 확인 */
+				beaforeX = $(this).scrollLeft();
+				beaforeY = $(this).scrollTop();				
+			}
+			
+			/* 터치 종료 이벤트 발생 */
+			function handleEnd(evt) {									
+				/* 종료 좌표값 확인 */				
+				var divX = evt.changedTouches[0].clientX;
+				var divY = evt.changedTouches[0].clientY;								
+				
+				/* 강제로 특정 좌표값 클릭 이벤트 발생 수행 */
+				dropClick(divX, divY);
+			}						
+		};	
+		
+		
+		/*=================== [공통 단 처리] ===================*/
+		/* 특정 좌표에 위치한 객체 강제로 클릭 이벤트 발생 수행 */
+		function dropClick(x, y){
+			var evt = document.createEvent("MouseEvents");
+			evt.initMouseEvent("click", true, true, window, 0,0,0,0,0, false, false, false, 0, null);
+			var cb = document.elementFromPoint(x, y);
+			cb.dispatchEvent(evt);
+		}
+		
+		/* jquery 현재 클릭된 객체 id 값 얻어오기 : 상시 대기 */		
+		$(document).ready(function(){ 
+			$('body').click(function(e){
+				// 클릭 이벤트가 발생 한 객체 id 저장
+				tagId = e.target.getAttribute('id');				
+				
+				// 드래그 앤 드롭으로 이벤트가 발생한 것인 지 확인
+				if(dragId.length > 0 && tagId.length > 0){
+					select_change(dragId, tagId);
+				}
+				// 일반 클릭 이벤트가 발생한 경우 처리
+				else {
+					alert(tagId);
+				}
+			});
+		});		
+		
+		/* 드래그 앤 드롭 교체 작업 실시 */
+		function select_change(drag, drop){
+			/* null 값이 아닐 경우 */
+			if(drag.length > 0 && drop.length > 0){								
+				/* 선택된 태그 id 확인 [drag : 최초 선택 객체] [drop : 변경될 객체] */
+				console.log("drag : " + drag);
+				console.log("drop : " + drop);
+				
+				/* 불필요한 태그 포함 시 종료 실시 */
+				if(drag == 'content_container' || drop == 'content_container'){
+					return;
+				}
+				
+				/* 특정 태그 css 속성값 얻어오기 */
+				/*
+				var dragBackgroundColor = $('#'+drag).css("background-color");
+				var dropBackgroundColor = $('#'+drop).css("background-color");				
+				console.log("drag [BackgroundColor] [Jquery] : " + dragBackgroundColor);
+				console.log("drop [BackgroundColor] [Jquery] : " + dropBackgroundColor);
+				*/
+				
+				var dragId = document.getElementById(drag);
+				var dropId = document.getElementById(drop);
+				var dragBackgroundColor = window.getComputedStyle(dragId).backgroundColor;
+				var dropBackgroundColor = window.getComputedStyle(dropId).backgroundColor;
+				console.log("drag [BackgroundColor] [JS] : " + dragBackgroundColor);
+				console.log("drop [BackgroundColor] [JS] : " + dropBackgroundColor);
+				
+				/* 특정 태그 속성 값 교체 실시 */
+				document.getElementById(drag).style.backgroundColor = dropBackgroundColor;
+				document.getElementById(drop).style.backgroundColor = dragBackgroundColor;
+				/* 투명도 조절 실시 */
+				document.getElementById(drag).style.opacity = '1';
+			}
+		};
+		
+</script>
+<!-- ============================================================================================== -->
+<!-- ============================================================================================== -->
+<style>
+.list-group-item {
+	width: 300px;
+	height: 50px;
+	border: 1px solid black;
+	margin-top: 10px;
+	cursor: grab;
+	height: 50px;
+	border: 1px solid black;
+	margin-top: 10px;
+}
+
+.list-group-item.sortable-chosen {
+	cursor: grabbing;
+}
+</style>
+
+<!-- Latest Sortable -->
+<script
+	src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+	//Simple list
+	Sortable.create(simpleList, { 
+		
+	});
+		
+	// List with handle
+	Sortable.create(listWithHandle, {
+		animation: 150
+	});
+});
+</script>
+<!-- ============================================================================================== -->
+<!-- ============================================================================================== -->
+</head>
+<body>
+	<!-- ============================================================================================== -->
+	<!-- ============================================================================================== -->
+	<div class="container1">
+		<div draggable="true" class="box1">A</div>
+		<div draggable="true" class="box1">B</div>
+		<div draggable="true" class="box1">C</div>
+	</div>
+	<!-- ============================================================================================== -->
+	<!-- ============================================================================================== -->
+	<div>
+		<div class="container2">
+			<div class="draggable2" draggable="true">
+				<span class="ico-drag2"></span>
+				<div class="el2">HTML</div>
+			</div>
+			<div class="draggable2" draggable="true">
+				<span class="ico-drag2"></span>
+				<div class="el2">CSS</div>
+			</div>
+			<div class="draggable2" draggable="true">
+				<span class="ico-drag2"></span>
+				<div class="el2">JavaScript</div>
+			</div>
+		</div>
+
+		<div class="container2">
+			<div class="draggable2" draggable="true">
+				<span class="ico-drag2"></span>
+				<div class="el2">React</div>
+			</div>
+			<div class="draggable2" draggable="true">
+				<span class="ico-drag2"></span>
+				<div class="el2">Vue</div>
+			</div>
+			<div class="draggable2" draggable="true">
+				<span class="ico-drag2"></span>
+				<div class="el2">Next JS</div>
+			</div>
+		</div>
+	</div>
+	<!-- ============================================================================================== -->
+	<!-- ============================================================================================== -->
+	<!-- 콘텐츠 div 레이아웃 -->
+	<div id="content_container" ondrop="drop(event)"
+		ondragover="allowDrop(event)">
+		<div id="container_1" draggable="true" ondragstart="drag(event)"></div>
+		<div id="container_2" draggable="true" ondragstart="drag(event)"></div>
+		<div id="container_3" draggable="true" ondragstart="drag(event)"></div>
+		<div id="container_4" draggable="true" ondragstart="drag(event)"></div>
+		<div id="container_5" draggable="true" ondragstart="drag(event)"></div>
+		<div id="container_6" draggable="true" ondragstart="drag(event)"></div>
+	</div>
+	<!-- ============================================================================================== -->
+	<!-- ============================================================================================== -->
+	<div>
+		<!-- Simple List -->
+		<h1>Simple List</h1>
+		<div id="simpleList" class="list-group">
+			<div class="list-group-item">
+				This is <a href="http://rubaxa.github.io/Sortable/">Sortable</a>
+			</div>
+			<div class="list-group-item">It works with Bootstrap...</div>
+			<div class="list-group-item">...out of the box.</div>
+			<div class="list-group-item">It has support for touch devices.</div>
+			<div class="list-group-item">Just drag some elements around.</div>
+		</div>
+
+		<!-- List with handle -->
+		<h1>List with handle</h1>
+		<div id="listWithHandle" class="list-group">
+			<div class="list-group-item">
+				<span class="badge">14</span> <span class="glyphicon glyphicon-move"
+					aria-hidden="true"></span> Drag me by the handle
+			</div>
+			<div class="list-group-item">
+				<span class="badge">2</span> <span class="glyphicon glyphicon-move"
+					aria-hidden="true"></span> You can also select text
+			</div>
+			<div class="list-group-item">
+				<span class="badge">1</span> <span class="glyphicon glyphicon-move"
+					aria-hidden="true"></span> Best of both worlds!
+			</div>
+		</div>
+	</div>
+	<!-- ============================================================================================== -->
+	<!-- ============================================================================================== -->
+</body>
+</html>
