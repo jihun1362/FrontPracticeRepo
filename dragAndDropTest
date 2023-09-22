@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-
 <!-- ============================================================================================== -->
 <!-- ============================================================================================== -->
 <style>
@@ -212,8 +211,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 <!-- ============================================================================================== -->
 <!-- jquery 추가 실시 -->
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-
-
 <!-- 내부 CSS 스타일 지정 -->
 <style>
 /* 
@@ -383,7 +380,6 @@ body::-webkit-scrollbar-thumb {
 	cursor: pointer;
 }
 </style>
-
 <!-- 내부 JS 지정 -->
 <script>
 		/* 
@@ -555,9 +551,6 @@ body::-webkit-scrollbar-thumb {
 	border: 1px solid black;
 	margin-top: 10px;
 	cursor: grab;
-	height: 50px;
-	border: 1px solid black;
-	margin-top: 10px;
 }
 
 .list-group-item.sortable-chosen {
