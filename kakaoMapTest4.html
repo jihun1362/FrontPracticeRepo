@@ -296,8 +296,8 @@ function appendMarker(driver) {
 	
 	//좌표 변환 및 마커 생성
 	driver.forEach((currentElement, index, array) => {
-	    console.log(index);
-	    console.log(currentElement);
+	    //console.log(index);
+	    //console.log(currentElement);
 	    
 	    var promise = new Promise(function(resolve, reject) {
 			// 주소로 좌표를 검색
@@ -380,7 +380,7 @@ function myLocation(on) {
 	        var locPosition = new kakao.maps.LatLng(lat, lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다     
 	     	// 인포윈도우 메세지
 		    var message = '여기에 계신가요?!';
-		    console.log('내 위치 좌표:'+locPosition);
+		    //console.log('내 위치 좌표:'+locPosition);
 	        
 		 	// 마커와 인포 윈도우 생성 및 저장
 		    markerSave(locPosition, message, myPoint);
@@ -488,7 +488,8 @@ function markerSave(locPosition, message, myPoint) {
 	    
 	 	// 마커의 인포윈도우 생성
 	   	var infowindow = new kakao.maps.InfoWindow({
-	   		content: naviMessage
+	   		content: naviMessage,
+	   		removable : true
 	   	});
 	 	
 	   	const infowindowObject = {
@@ -505,8 +506,6 @@ function markerSave(locPosition, message, myPoint) {
 
 	   		// 마커에 마우스오버 이벤트를 등록합니다
 	   	   	kakao.maps.event.addListener(marker, 'mouseover', function() {
-	   	   		// 모든 인포윈도우 닫기(인포윈도우 한개만 오픈되게하기 위해)
-	   			hideInfowindows();
 	   	   		// 마커 오버 이벤트 상세
 	   			markerEvent(marker, "over");
 	   	   	});
