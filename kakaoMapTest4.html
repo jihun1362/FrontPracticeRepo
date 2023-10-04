@@ -551,7 +551,7 @@ function markerEvent(marker, overState) {
   	    if(!selectMarker.classList.contains('border4px')||overState === "nonClick"||overState === "click"||overState ==="map_click"){
   	    	//console.log(marker.getTitle());
   	    	// 마커 오버인지 아웃인지 구분에 따른 스타일 값 부여 삭제
-  	    	if(overState === "over"){
+  	    	if(overState === "over"||overState === "click"){
   	    		selectMarker.style['border'] = '4px solid black';
   	    	} else {
   	  			selectMarker.style.removeProperty('border');  	    		
