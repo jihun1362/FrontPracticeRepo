@@ -117,12 +117,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 <!-- body 밑에 있어야 맵이 작동! -->
 <script type="text/javascript"
 	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=appkey&libraries=services"></script>
-	
+
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.3.0/kakao.min.js"
-  	integrity="sha384-70k0rrouSYPWJt7q9rSTKpiTfX6USlMYjZUtr1Du+9o4cGvhPAWxngdtVZDdErlh" 
+	integrity="sha384-70k0rrouSYPWJt7q9rSTKpiTfX6USlMYjZUtr1Du+9o4cGvhPAWxngdtVZDdErlh"
 	crossorigin="anonymous"></script>
 <script>
-  	Kakao.init('appkey'); // 사용하려는 앱의 JavaScript 키 입력
+	Kakao.init('appkey'); // 사용하려는 앱의 JavaScript 키 입력
 </script>
 
 <script>
@@ -365,7 +365,7 @@ function myLocation(on) {
 	// 지도 재설정 범위 정보 초기화
 	//bounds = new kakao.maps.LatLngBounds(); 
 	// 맵에 찍힌 마커와 인포 윈도우 초기화
-	markerReset(myPoint);
+	markerReset(myPoint, on);
 	
 	// HTML5의 geolocation으로 사용할 수 있는지 확인
 	if (navigator.geolocation) {
@@ -397,7 +397,7 @@ function myLocation(on) {
 }
 
 // 맵에 찍힌 마커와 인포 윈도우 초기화
-function markerReset(myPoint) {
+function markerReset(myPoint, on) {
 	if(myPoint === 'myPoint'){
 		// 맵에 찍힌 마커들이 있으면 삭제 없으면 통과
 		if(my_markers.length >= 1){
@@ -408,12 +408,16 @@ function markerReset(myPoint) {
 		// 마커 배열을 빈 배열로 만들기
 		my_markers = [];
 		
-		// 맵에 찍힌 인포윈도우들이 있으면 삭제 없으면 통과
-		if(my_infowindows.length >= 1){
-			hideInfowindows();
+		// 인터벌이 아닐때만 인포윈도우 닫히기
+		if(on !== "interval"){
+			// 맵에 찍힌 인포윈도우들이 있으면 삭제 없으면 통과
+			if(my_infowindows.length >= 1){
+				hideInfowindows();
+			}
+			// 인포윈도우 배열을 빈 배열로 만들기
+			my_infowindows = [];
 		}
-		// 인포윈도우 배열을 빈 배열로 만들기
-		my_infowindows = [];
+		
 	} else {
 		// 맵에 찍힌 마커들이 있으면 삭제 없으면 통과
 		if(markers.length >= 1){
@@ -708,7 +712,7 @@ function markerNavi(coordinateX, coordinateY) {
 }
 
 // 내 위치 10초 마다 자동으로 찍기
-setInterval(() => myLocation(), 10000);
+setInterval(() => myLocation("interval"), 10000);
 
 
 <!-- @@@@@@@@@@@@@@@@@@@@@@@@드래그 앤 드랍 리스트 추가@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
